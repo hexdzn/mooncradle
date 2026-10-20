@@ -2,46 +2,369 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mooncradle support</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mooncradle – Baby Log: free, no ads, no account</title>
+<meta name="description" content="Mooncradle is a free baby log for iPhone and Apple Watch. Log feeds, sleep and diapers in one tap and share with your partner through iCloud. No ads, no subscription, no account.">
+<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101012" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://hexdzn.github.io/mooncradle/">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="img/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hexdzn.github.io/mooncradle/">
+<meta property="og:title" content="Mooncradle – Baby Log">
+<meta property="og:description" content="Free forever. No ads, no subscription, no account. A one-tap baby log for iPhone and Apple Watch.">
+<meta property="og:image" content="https://hexdzn.github.io/mooncradle/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mooncradle – Baby Log. Free forever. No ads, no subscription, no account.">
+<meta name="twitter:card" content="summary_large_image">
+<!-- When the app is live, uncomment to show Safari's "Open in App Store" banner on iPhone:
+<meta name="apple-itunes-app" content="app-id=6824435109">
+-->
 <style>
-:root { --bg:#FAFAF8; --surface:#F1EFE8; --text:#2C2C2A; --muted:#5F5E5A; --accent:#0F6E56; --line:#E4E2DA; }
-@media (prefers-color-scheme: dark) { :root { --bg:#101012; --surface:#1C1C1F; --text:#C9C6BC; --muted:#8A877F; --accent:#5DCAA5; --line:#26262A; } }
+:root {
+  --bg: #FAFAF8; --surface: #F1EFE8; --raised: #FFFFFF; --text: #2C2C2A; --muted: #5F5E5A;
+  --accent: #0F6E56; --accent-deep: #085041; --accent-tint: #E1F3EC; --line: #E4E2DA;
+  --ink: #101012; --on-ink: #EDEBE4; --on-ink-muted: #A3A097;
+  --shadow: 0 1px 2px rgba(20,20,18,.06), 0 12px 32px -8px rgba(20,20,18,.18);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --gutter: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101012; --surface: #1C1C1F; --raised: #26262A; --text: #EDEBE4; --muted: #A3A097;
+    --accent: #5DCAA5; --accent-deep: #5DCAA5; --accent-tint: #12302A; --line: #26262A;
+    --ink: #1C1C1F;
+    --shadow: 0 0 0 1px rgba(255,255,255,.06), 0 16px 40px -8px rgba(0,0,0,.6);
+  }
+}
 * { box-sizing: border-box; }
-body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-main { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
-header { display:flex; align-items:center; gap:14px; margin-bottom: 24px; }
-header img { width:56px; height:56px; border-radius:13px; }
-header a { color:inherit; text-decoration:none; }
-h1 { font-size: 28px; line-height:1.2; margin: 0; }
-h2 { font-size: 20px; margin: 32px 0 8px; }
-p, li { color: var(--text); }
-.muted, em { color: var(--muted); font-style: normal; }
-a { color: var(--accent); }
-ul { padding-left: 20px; }
-li { margin: 6px 0; }
-.card { background: var(--surface); border-radius: 14px; padding: 16px 18px; margin: 16px 0; }
-footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 17px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased; overflow-wrap: break-word;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--accent); text-underline-offset: 3px; touch-action: manipulation; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--gutter); }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--bg); padding: 8px 12px; }
+
+/* Nav */
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: 16px; }
+.brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 600; letter-spacing: -0.01em; }
+.brand picture { display: block; flex-shrink: 0; }
+.brand img { width: 30px; height: 30px; border-radius: 7px; }
+.nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; font-size: 15px; }
+.nav ul a { color: var(--muted); text-decoration: none; padding: 8px 0; white-space: nowrap; }
+@media (hover: hover) and (pointer: fine) { .nav ul a:hover { color: var(--text); } }
+
+/* Hero */
+.hero { text-align: center; padding: 56px 0 8px; }
+.hero .app-icon img { width: 112px; height: 112px; border-radius: 25px; margin: 0 auto 28px; box-shadow: var(--shadow); }
+.eyebrow { margin: 0 0 10px; font-size: 17px; font-weight: 600; color: var(--muted); letter-spacing: -0.005em; }
+h1, h2, h3 { margin: 0; font-weight: 700; text-wrap: balance; -webkit-hyphens: auto; hyphens: auto; }
+.lede, .sub, .section-sub { text-wrap: pretty; }
+h1 { font-size: clamp(48px, 10vw, 88px); line-height: 1.02; letter-spacing: -0.035em; }
+.lede { margin: 14px auto 0; font-size: clamp(20px, 3vw, 26px); line-height: 1.3; letter-spacing: -0.015em; font-weight: 600; color: var(--accent-deep); }
+.sub { margin: 18px auto 0; max-width: 34em; color: var(--muted); font-size: 18px; }
+.cta { margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.store, .button-secondary {
+  display: inline-block; max-width: 100%; text-align: center; line-height: 1.35; text-decoration: none; font-weight: 600;
+  border-radius: 999px; transition: transform 160ms var(--ease-out);
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+}
+.store { padding: 15px 26px; background: var(--text); color: var(--bg); font-size: 17px; letter-spacing: -0.01em; }
+.store:active, .button-secondary:active { transform: scale(0.97); }
+.store[aria-disabled="true"] { cursor: default; }
+.store[aria-disabled="true"]:active { transform: none; }
+.store .soon { font-weight: 500; opacity: .7; }
+.meta { font-size: 14px; color: var(--muted); margin: 0; text-wrap: balance; }
+.nowrap { white-space: nowrap; }
+
+/* Screenshot strip */
+.strip { display: flex; justify-content: center; align-items: flex-end; gap: 28px; padding: 64px var(--gutter) 24px; }
+.phone { width: 260px; border-radius: 40px; overflow: hidden; box-shadow: var(--shadow); background: var(--surface); }
+.phone img { width: 100%; aspect-ratio: 640 / 1391; object-fit: cover; }
+.strip figure { flex: 0 0 auto; margin: 0; text-align: center; }
+.strip figure:nth-child(2) .phone { width: 290px; }
+.strip figcaption { margin-top: 14px; font-size: 14px; color: var(--muted); }
+@media (max-width: 860px) {
+  .strip { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    scrollbar-width: none; padding-top: 48px; scroll-padding-inline: var(--gutter); }
+  .strip::-webkit-scrollbar { display: none; }
+  .strip figure { scroll-snap-align: start; }
+  .phone, .strip figure:nth-child(2) .phone { width: min(68vw, 280px); }
+  .strip::after { content: ""; flex: 0 0 1px; }
+}
+
+/* Sections */
+section { padding: 96px 0 0; }
+.kicker { margin: 0 0 12px; font-size: 15px; font-weight: 600; color: var(--accent); }
+h2 { font-size: clamp(32px, 5.2vw, 52px); line-height: 1.06; letter-spacing: -0.03em; }
+.section-sub { margin: 16px 0 0; font-size: 19px; color: var(--muted); max-width: 32em; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+.row.flip > :first-child { order: 2; }
+ul.points { list-style: none; margin: 24px 0 0; padding: 0; }
+ul.points li { position: relative; padding-left: 26px; margin: 10px 0; }
+ul.points li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.visual { display: flex; justify-content: center; }
+
+/* One-tap detail: crop of the night-mode buttons */
+.tiles-crop { width: min(100%, 420px); border-radius: 32px; overflow: hidden; box-shadow: var(--shadow); background: #101012; }
+.tiles-crop img { width: 100%; aspect-ratio: 1206 / 1040; object-fit: cover; object-position: 50% 100%; }
+
+/* Lock Screen screenshot */
+.lock { width: min(100%, 300px); border-radius: 40px; overflow: hidden; box-shadow: var(--shadow); background: #0E1412; }
+.lock img { width: 100%; aspect-ratio: 640 / 1253; object-fit: cover; }
+
+/* Watch */
+.watches { display: flex; gap: 20px; justify-content: center; align-items: center; }
+.watch { width: 180px; padding: 14px; border-radius: 48px; background: #000; box-shadow: var(--shadow); }
+.watch img { border-radius: 30px; width: 100%; aspect-ratio: 416 / 496; }
+.watches .watch:last-child { transform: translateY(28px); }
+
+/* Card grid */
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 40px; }
+.card { background: var(--surface); border-radius: 24px; padding: 26px 24px 28px; }
+.card.wide { grid-column: span 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
+.card .icon { width: 40px; height: 40px; border-radius: 11px; background: var(--accent-tint); color: var(--accent); display: grid; place-items: center; margin-bottom: 18px; }
+.card .icon svg { width: 22px; height: 22px; }
+h3 { font-size: 21px; line-height: 1.2; letter-spacing: -0.015em; }
+.card p { margin: 8px 0 0; color: var(--muted); font-size: 16px; }
+.who { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
+.who div { background: var(--raised); border-radius: 14px; padding: 10px 14px; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,.05); display: flex; justify-content: space-between; gap: 16px; }
+.who small { color: var(--muted); font-size: 13px; }
+
+/* Why free */
+.why { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: start; }
+.why .copy p { margin: 0 0 16px; font-size: 19px; }
+.why .copy p:last-child { margin-bottom: 0; }
+.why .copy .muted { color: var(--muted); }
+
+/* Privacy */
+.privacy { margin-top: 96px; background: var(--ink); color: var(--on-ink); border-radius: 32px; padding: 64px 56px; }
+.privacy .kicker, .privacy a { color: #5DCAA5; }
+.privacy .section-sub { color: var(--on-ink-muted); }
+.privacy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 44px; }
+.privacy-grid h3 { font-size: 19px; }
+.privacy-grid p { margin: 6px 0 0; color: var(--on-ink-muted); font-size: 16px; }
+
+/* Support */
+.support { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.support h2 { font-size: clamp(28px, 4vw, 36px); }
+.support .section-sub { font-size: 17px; }
+.button-secondary { padding: 13px 24px; background: var(--accent-tint); color: var(--accent-deep); }
+
+footer { margin-top: 96px; padding: 24px 0 max(32px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+footer .links { display: flex; gap: 8px 20px; flex-wrap: wrap; margin-bottom: 10px; }
+footer p { margin: 0; }
+
+/* First-load entrance: rare, so it can carry a little delight. Opacity only when motion is reduced. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise { animation: rise 700ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms); }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: fade 300ms ease both; }
+  @keyframes fade { from { opacity: 0; } }
+}
+
+@media (max-width: 860px) {
+  section { padding-top: 72px; }
+  .row, .why { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .why { gap: 20px; }
+  .row.flip > :first-child { order: 0; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card.wide { grid-column: 1 / -1; }
+  .privacy { padding: 48px 28px; border-radius: 28px; margin-top: 72px; }
+  .privacy-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+@media (max-width: 400px) {
+  .nav ul li:nth-child(2) { display: none; }
+}
+@media (max-width: 560px) {
+  .nav ul { gap: 16px; }
+  .nav ul li:first-child { display: none; }
+  .hero { padding-top: 36px; }
+  .button-secondary { border-radius: 20px; }
+  .store { border-radius: 24px; }
+  .hero .app-icon img { width: 96px; height: 96px; border-radius: 22px; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .card.wide { grid-template-columns: minmax(0, 1fr); }
+  .card:not(.wide) { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 14px; padding: 20px; border-radius: 20px; }
+  .card:not(.wide) .icon { grid-row: span 2; margin: 0; }
+  .card:not(.wide) p { margin-top: 4px; }
+  .who { min-width: 0; }
+  .watch { width: 150px; padding: 11px; border-radius: 40px; }
+  .watch img { border-radius: 26px; }
+  .watches { gap: 14px; }
+  .why .copy p { font-size: 17px; }
+  .privacy { margin-left: calc(-1 * var(--gutter) + 8px); margin-right: calc(-1 * var(--gutter) + 8px); padding: 44px 24px; }
+}
 </style>
 </head>
 <body>
-<main>
-<header><a href="./"><img src="icon.png" alt=""></a><div><a href="./"><strong>Mooncradle</strong></a><div class="muted">Baby log · free, no ads</div></div></header>
-<h1>Mooncradle support</h1>
-<p>Mooncradle is a free baby log for iPhone and Apple Watch: feeds, sleep, diapers, pumping, medicine and growth, shared with your partner through iCloud. No ads, no subscription, no account.</p>
-<div class="card">
-<strong>Need help or found a bug?</strong>
-<p style="margin:6px 0 0">Email <a href="mailto:piyushggrover@gmail.com?subject=Mooncradle">piyushggrover@gmail.com</a>. Please include your iPhone model and what you tapped. You'll get a reply from a person.</p>
-</div>
-<h2>Common questions</h2>
-<p><strong>How do I share with my partner?</strong><br>Settings › Share with partner or caregiver, then share the invite link. When they open it on their iPhone, you both log into the same log. Both of you need to be signed in to iCloud.</p>
-<p><strong>Sync says it can't connect.</strong><br>Check you're signed in to iCloud in the Settings app, and that Sync with iCloud is on in Mooncradle's Settings. Logging keeps working without a connection; everything catches up when you're back online.</p>
-<p><strong>How do I add a second child?</strong><br>Tap your child's name at the top of the home screen, then Add a child.</p>
-<p><strong>Can I get my data out?</strong><br>Yes. Settings › Export PDF or CSV.</p>
-<p><strong>Is my data private?</strong><br>Yes. It stays on your devices and in your own iCloud; we never see it. Read the <a href="privacy/">privacy policy</a>.</p>
-<p class="muted">Mooncradle records what you enter. It isn't medical advice; ask your doctor about your child's health.</p>
+<a class="skip" href="#features">Skip to features</a>
 
-<footer>© 2026 Piyush · <a href="./">Support</a> · <a href="privacy/">Privacy</a></footer>
+<div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="./">
+      <picture><source srcset="img/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="img/icon.png" alt="" width="30" height="30"></picture>
+      Mooncradle
+    </a>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="support/">Support</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <picture class="app-icon rise" style="--i:0; display:block">
+      <source srcset="img/icon-dark.png" media="(prefers-color-scheme: dark)">
+      <img src="img/icon.png" alt="Mooncradle app icon" width="112" height="112">
+    </picture>
+    <p class="eyebrow rise" style="--i:1">Mooncradle – Baby Log</p>
+    <h1 class="rise" style="--i:2">Free forever.</h1>
+    <p class="lede rise" style="--i:3">No ads, no subscription, no account.</p>
+    <p class="sub rise" style="--i:4">A calm, one-tap log for feeds, sleep and diapers on iPhone and Apple Watch, shared with your partner through iCloud.</p>
+    <div class="cta rise" style="--i:5">
+      <!-- When the app is live: change to <a class="store" href="https://apps.apple.com/app/id6824435109">Download on the App Store</a> -->
+      <a class="store" aria-disabled="true"><span class="nowrap">App Store</span> <span class="soon">· Coming soon</span></a>
+      <p class="meta">Free · iPhone and Apple&nbsp;Watch · iOS&nbsp;17 or&nbsp;later</p>
+    </div>
+  </header>
+</div>
+
+<div class="strip rise" style="--i:6" role="region" aria-label="Screenshots" tabindex="0">
+  <figure><div class="phone"><img src="img/home.jpg" alt="Home screen with a feeding timer running and one-tap buttons for feeds, diapers, sleep and pumping" width="640" height="1391"></div><figcaption>Log anything in one tap</figcaption></figure>
+  <figure><div class="phone"><img src="img/night.jpg" alt="The same screen in night mode, dimmed with only the essentials" width="640" height="1391"></div><figcaption>Night mode for 3 am</figcaption></figure>
+  <figure><div class="phone"><img src="img/summary.jpg" alt="Daily summary with feeds, sleep, diapers and charts for the week" width="640" height="1391"></div><figcaption>See the whole day</figcaption></figure>
+</div>
+
+<main class="wrap" id="features">
+
+  <section class="row">
+    <div>
+      <p class="kicker">One tap</p>
+      <h2>Made for half asleep.</h2>
+      <p class="section-sub">Left, Right, Bottle, Wet, Dirty, Sleep and Pump sit on the home screen. One tap logs it, and Undo is always there.</p>
+      <ul class="points">
+        <li>The breastfeeding timer remembers which side is next.</li>
+        <li>“Fed 2h 10m ago” is always at the top. No math at night.</li>
+        <li>Night mode dims everything and shows only what matters.</li>
+      </ul>
+    </div>
+    <div class="visual"><div class="tiles-crop"><img src="img/night.jpg" alt="Night mode buttons: On now, Right, Bottle, Wet, Dirty, Both, Sleep, Pump and More" width="640" height="1391" loading="lazy"></div></div>
+  </section>
+
+  <section class="row flip">
+    <div>
+      <p class="kicker">Lock Screen and Dynamic Island</p>
+      <h2>The timer, without unlocking.</h2>
+      <p class="section-sub">A running feed lives on your Lock Screen and in the Dynamic Island. Switch sides or finish the feed right from there.</p>
+    </div>
+    <div class="visual">
+      <div class="lock"><img src="img/lock.jpg" alt="Lock Screen with a Mooncradle feeding timer, with Switch to Right and Done buttons" width="640" height="1253" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section class="row">
+    <div>
+      <p class="kicker">Apple Watch</p>
+      <h2>Log from your wrist.</h2>
+      <p class="section-sub">Feeds, bottles and diapers in a tap, with the timer right there. Out of range of your phone? Taps wait on the Watch and land at the right time.</p>
+      <ul class="points"><li>Complications show the time since the last feed.</li></ul>
+    </div>
+    <div class="visual watches">
+      <div class="watch"><img src="img/watch-home.png" alt="Apple Watch home with last feed time and buttons for feeds, bottle and diaper" width="416" height="496" loading="lazy"></div>
+      <div class="watch"><img src="img/watch-timer.png" alt="Apple Watch feeding timer with Switch and Done" width="416" height="496" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Everything else</p>
+    <h2>All of it, free.</h2>
+    <p class="section-sub">No paywall on the features you need at 3 am.</p>
+    <div class="grid">
+      <div class="card wide">
+        <div>
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.5c2.3 0 4 1.3 4.5 3.8"/></svg></div>
+          <h3>Share with your partner</h3>
+          <p>Invite a partner, grandparent or nanny. Everyone logs from their own iPhone and sees the same log within seconds, through your own iCloud.</p>
+        </div>
+        <div class="who" aria-hidden="true">
+          <div><span>Feed · L 9m · R 14m</span><small>You</small></div>
+          <div><span>Bottle · 90 mL</span><small>Partner</small></div>
+          <div><span>Wet diaper</span><small>Grandma</small></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="10" r="3.5"/><circle cx="16.5" cy="11.5" r="2.5"/><path d="M3 19.5c.8-2.6 2.7-3.8 5-3.8s4.2 1.2 5 3.8M14 19.5c.4-1.6 1.4-2.6 2.5-2.6s2.1 1 2.5 2.6"/></svg></div>
+        <h3>More than one child</h3>
+        <p>Siblings and twins, each with their own log, timer and color.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></svg></div>
+        <h3>Widgets</h3>
+        <p>Time since the last feed on your Home Screen and Lock Screen.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></div>
+        <h3>Reminders</h3>
+        <p>For the next feed and for medicines, with Start and Snooze on the notification.</p>
+      </div>
+      <div class="card">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z"/><path d="M14 3.5v5h5M9 13h6M9 16.5h4"/></svg></div>
+        <h3>PDF and CSV export</h3>
+        <p>A tidy PDF to take to appointments, and a CSV of everything.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="why" id="why-free">
+    <div>
+      <p class="kicker">Why free?</p>
+      <h2>No catch.</h2>
+    </div>
+    <div class="copy">
+      <p>Mooncradle is made by one independent developer, not a company with investors to pay back.</p>
+      <p>Your log lives on your devices and in your own iCloud, so there are no servers to run. That keeps the cost close to nothing, and it's why the app can stay free without ads or selling anything about you.</p>
+      <p class="muted">Everything in the app today is free, and it will stay that way.</p>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy">
+    <p class="kicker">Privacy</p>
+    <h2>We never see your data.</h2>
+    <p class="section-sub">Your log stays on your devices and in your own iCloud. Mooncradle's App Store privacy label: Data Not Collected.</p>
+    <div class="privacy-grid">
+      <div><h3>No account</h3><p>Nothing to sign up for. Open the app and start logging.</p></div>
+      <div><h3>No ads or tracking</h3><p>No analytics, no third-party code, no servers of our own.</p></div>
+      <div><h3>Your iCloud</h3><p>Sync and sharing go through your private iCloud. Turn it off any time.</p></div>
+    </div>
+    <p style="margin:36px 0 0"><a href="privacy/">Read the privacy policy</a></p>
+  </section>
+
+  <section class="support" id="support">
+    <div>
+      <h2>Questions or a bug?</h2>
+      <p class="section-sub">Email <a href="mailto:piyushggrover@gmail.com?subject=Mooncradle">piyushggrover@gmail.com</a> and you'll get a reply from a person.</p>
+    </div>
+    <a class="button-secondary" href="support/">Help and FAQ</a>
+  </section>
+
+  <footer>
+    <div class="links"><a href="support/">Support</a><a href="privacy/">Privacy policy</a><a href="mailto:piyushggrover@gmail.com?subject=Mooncradle">Contact</a></div>
+    <p>Mooncradle records what you enter. It isn't medical advice; ask your doctor about your child's health.</p>
+    <p style="margin-top:6px">© 2026 Piyush</p>
+  </footer>
 </main>
+
 </body>
 </html>
